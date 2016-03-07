@@ -11,10 +11,6 @@ module Mastermind
       @board = input.fetch(:board, default_board)
     end
 
-    def default_board
-      Array.new(12) { Array.new(4) { Slot.new } }
-    end
-
     def formatted_board
       board.each do |row|
         print "|"
@@ -22,14 +18,31 @@ module Mastermind
         puts ""
       end
     end
+
+    private
+
+    def default_board
+      Array.new(12) { Row.new }
+    end
   end
 
   class ColorCode
+    attr_accessor :code
+    def initialize(code = [])
+      @code = code
+    end
 
+    def set_code
+      @code = Array.new(4)
+      return @code.map! { |e| e = rand(1..6) }
+    end
   end
 
-  class RowGrid
-
+  class Row
+    attr_accessor :row
+    def initialize(row = Array.new(4) { Slot.new } )
+      @row = row
+    end
   end
 
   class Slot
@@ -40,9 +53,19 @@ module Mastermind
   end
 
   class Player
-
+    attr_accessor :name, :points
+    def initialize(name)
+      @name = name
+    end
   end
 end
 
-a = Mastermind::DecodeBoard.new
-a.formatted_board
+include Mastermind
+
+a = DecodeBoard.new
+# p a.board
+# a.formatted_board
+# b = ColorCode.new
+# p b.set_code
+# p b.code
+# p Row.new
