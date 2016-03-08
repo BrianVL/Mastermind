@@ -14,7 +14,7 @@ module Mastermind
     def formatted_board
       board.each do |row|
         print "|"
-        row.each { |slot| print "#{slot.value}" + "|" }
+        row.value.each { |slot| print "#{slot.value}" + "|" }
         puts ""
       end
     end
@@ -39,9 +39,12 @@ module Mastermind
   end
 
   class Row
-    attr_accessor :row
-    def initialize(row = Array.new(4) { Slot.new } )
-      @row = row
+    attr_accessor :value, :row_id
+    @@row_count = 0
+    def initialize(value = Array.new(4) { Slot.new } )
+      @value = value
+      @row_id = @@row_count
+      @@row_count += 1
     end
   end
 
@@ -63,8 +66,8 @@ end
 include Mastermind
 
 a = DecodeBoard.new
-# p a.board
-# a.formatted_board
+p a.board
+a.formatted_board
 # b = ColorCode.new
 # p b.set_code
 # p b.code
