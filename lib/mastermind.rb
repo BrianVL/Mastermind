@@ -13,10 +13,25 @@ module Mastermind
 
     def formatted_board
       board.each do |row|
-        print "|"
-        row.value.each { |slot| print "#{slot.value}" + "|" }
+        print "#{row.row_id + 1} |"
+        row.data.each { |slot| print "#{slot.value}" + "|" }
         puts ""
       end
+    end
+
+    def row_to_array(row)
+      @row_array = []
+      row.data.each { |e| @row_array << e.value  }
+      @row_array
+    end
+
+    def ask_guess
+      puts "Please enter your guess:"
+      gets.chomp
+    end
+
+    def set_row
+      p ask_guess.split(//)
     end
 
     private
@@ -39,12 +54,16 @@ module Mastermind
   end
 
   class Row
-    attr_accessor :value, :row_id
+    attr_accessor :data, :row_id
     @@row_count = 0
-    def initialize(value = Array.new(4) { Slot.new } )
-      @value = value
+    def initialize(data = Array.new(4) { Slot.new } )
+      @data = data
       @row_id = @@row_count
       @@row_count += 1
+    end
+
+    def row_count
+      @@row_count
     end
   end
 
@@ -66,9 +85,8 @@ end
 include Mastermind
 
 a = DecodeBoard.new
-p a.board
-a.formatted_board
+a.set_row
+# a.formatted_board
 # b = ColorCode.new
 # p b.set_code
 # p b.code
-# p Row.new
