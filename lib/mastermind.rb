@@ -30,8 +30,9 @@ module Mastermind
       gets.chomp
     end
 
-    def set_row
-      p ask_guess.split(//)
+    def set_row(row_nr)
+      data = ask_guess.split(//)
+      @board[row_nr].data.each_with_index  { |item, index| item.value = data[index] }
     end
 
     private
@@ -85,8 +86,8 @@ end
 include Mastermind
 
 a = DecodeBoard.new
-a.set_row
-# a.formatted_board
+a.set_row(3)
+# p a.board[0].data
 # b = ColorCode.new
 # p b.set_code
 # p b.code
