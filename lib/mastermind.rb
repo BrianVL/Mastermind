@@ -21,7 +21,7 @@ module Mastermind
 
     def row_to_array(row)
       @row_array = []
-      row.data.each { |e| @row_array << e.value  }
+      row.data.each { |e| @row_array << e.value.to_i  }
       @row_array
     end
 
@@ -35,10 +35,22 @@ module Mastermind
       @board[row_nr].data.each_with_index  { |item, index| item.value = data[index] }
     end
 
+    def check_code(code, current_row)
+      if correct?(code, current_row)
+        return :correct
+      else
+        return :wrong
+      end
+    end
+
     private
 
     def default_board
       Array.new(12) { Row.new }
+    end
+
+    def correct?(code, current_row)
+      return true if code == row_to_array(@board[current_row])
     end
   end
 
@@ -86,8 +98,8 @@ end
 include Mastermind
 
 a = DecodeBoard.new
-a.set_row(3)
+# a.set_row(3)
 # p a.board[0].data
-# b = ColorCode.new
-# p b.set_code
-# p b.code
+b = ColorCode.new
+p b.set_code
+p b.code
