@@ -32,7 +32,7 @@ module Mastermind
 
     def set_row(row_nr)
       data = ask_guess.split(//)
-      @board[row_nr].data.each_with_index  { |item, index| item.value = data[index] }
+      @board[row_nr].data.each_with_index  { |item, index| item.value = data[index].to_i }
     end
 
     def check_code(code, current_row)
@@ -43,14 +43,36 @@ module Mastermind
       end
     end
 
+    def check_keys(code, current_row)
+      check_positions(code, current_row)
+      check_colors(code, current_row)
+    end
+
     private
 
     def default_board
       Array.new(12) { Row.new }
     end
 
+    # check if the entered row equals the code. input example to compare 5th row with code_example: (code_example.code, 5)
     def correct?(code, current_row)
       return true if code == row_to_array(@board[current_row])
+    end
+
+    def check_positions(code, current_row)
+      whites = 0
+      @board[current_row].data.each_with_index do |item, index|
+        whites += 1 if code[index] == item.value
+      end
+      puts "whites: #{whites}"
+    end
+
+    def check_colors(code, current_row)
+      reds = 0
+      @board[current_row].data.each do |item|
+        reds += 1 if code.include?(item.value)
+      end
+      puts "reds: #{reds}"
     end
   end
 
@@ -62,7 +84,7 @@ module Mastermind
 
     def set_code
       @code = Array.new(4)
-      return @code.map! { |e| e = rand(1..6) }
+      @code.map! { |e| e = rand(1..6) }
     end
   end
 
@@ -75,7 +97,7 @@ module Mastermind
       @@row_count += 1
     end
 
-    def row_count
+    def self.row_count
       @@row_count
     end
   end
@@ -97,9 +119,10 @@ end
 
 include Mastermind
 
-a = DecodeBoard.new
-# a.set_row(3)
+# a = DecodeBoard.new
+# a.set_row(4)
 # p a.board[0].data
-b = ColorCode.new
-p b.set_code
-p b.code
+# b = ColorCode.new
+# p b.set_code
+# p b.code
+# a.check_keys(b.code, 4)
