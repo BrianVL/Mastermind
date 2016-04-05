@@ -2,7 +2,15 @@ require_relative "./mastermind/version"
 
 module Mastermind
   class Game
+    attr_accessor :board
 
+    def initialize(board = DecodeBoard.new)
+      @board = board
+    end
+
+    def play
+
+    end
   end
 
   class DecodeBoard
