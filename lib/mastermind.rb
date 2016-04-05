@@ -69,8 +69,11 @@ module Mastermind
 
     def check_colors(code, current_row)
       reds = 0
-      @board[current_row].data.each do |item|
-        reds += 1 if code.include?(item.value)
+      @board[current_row].data.each_with_index do |item, index|
+        if code.include?(item.value) && code[index] != item.value
+          reds += 1
+          puts "#{index} / #{code[index]} / #{item.value}"
+        end
       end
       puts "reds: #{reds}"
     end
