@@ -2,14 +2,31 @@ require_relative "./mastermind/version"
 
 module Mastermind
   class Game
-    attr_accessor :board
+    attr_accessor :board, :code
 
-    def initialize(board = DecodeBoard.new)
+    def initialize(board = DecodeBoard.new, code = ColorCode.new)
       @board = board
+      @code = code
+    end
+
+    def winner_text(turns)
+      puts "You guessed the code in #{turns} turns!"
     end
 
     def play
-
+      @board.clear_board
+      @code.set_code
+      row_number = 0
+      while row_number <= 11
+        @board.set_row(row_number)
+        @board.formatted_board
+        @board.check_keys(code.code, row_number)
+        if @board.check_code(@code.code, row_number) == :correct
+          return winner_text(row_number)
+        else
+          row_number += 1
+        end
+      end
     end
   end
 
@@ -56,6 +73,12 @@ module Mastermind
       check_colors(code, current_row)
     end
 
+    def clear_board
+      @board.each do |row|
+        row.data.each {|slot| slot.value = "O"}
+      end
+    end
+
     private
 
     def default_board
@@ -80,7 +103,6 @@ module Mastermind
       @board[current_row].data.each_with_index do |item, index|
         if code.include?(item.value) && code[index] != item.value
           reds += 1
-          puts "#{index} / #{code[index]} / #{item.value}"
         end
       end
       puts "reds: #{reds}"
