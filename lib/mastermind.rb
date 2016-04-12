@@ -9,13 +9,18 @@ module Mastermind
       @code = code
     end
 
-    def winner_text(turns)
-      puts "You guessed the code in #{turns} turns!"
+    def winner_text(row)
+      puts "You guessed the code in #{row + 1} turns!"
     end
 
-    def play
+    def computer_guess
+      code_guess = Array.new(4)
+      code_guess.map! { |e| e = rand(1..6) }
+    end
+
+    def play_human
       @board.clear_board
-      @code.set_code
+      @code.set_code_auto
       row_number = 0
       while row_number <= 11
         @board.set_row(row_number)
@@ -27,6 +32,24 @@ module Mastermind
           row_number += 1
         end
       end
+      puts "You were unable to guess the code! Try again!"
+    end
+
+    def play_computer
+      @board.clear_board
+      @code.set_code_man
+      row_number = 0
+      while row_number <= 11
+        @board.set_row(row_number, computer_guess)
+        @board.formatted_board
+        @board.check_keys(code.code, row_number)
+        if @board.check_code(@code.code, row_number) == :correct
+          return winner_text(row_number)
+        else
+          row_number += 1
+        end
+      end
+      puts "The computer was unable to correctly guess your code."
     end
   end
 
@@ -55,9 +78,13 @@ module Mastermind
       gets.chomp
     end
 
-    def set_row(row_nr)
-      data = ask_guess.split(//)
-      @board[row_nr].data.each_with_index  { |item, index| item.value = data[index].to_i }
+    def set_row(row_nr, *set_code)
+      if set_code == []
+        set_code = ask_guess.split(//)
+      else
+        set_code.flatten!
+      end
+      @board[row_nr].data.each_with_index  { |item, index| item.value = set_code[index].to_i }
     end
 
     def check_code(code, current_row)
@@ -115,7 +142,17 @@ module Mastermind
       @code = code
     end
 
-    def set_code
+    def ask_code
+      puts "Please enter your color code:"
+      gets.chomp
+    end
+
+    def set_code_man
+      humancode = ask_code.split(//)
+      @code = humancode.collect { |value| value = value.to_i }
+    end
+
+    def set_code_auto
       @code = Array.new(4)
       @code.map! { |e| e = rand(1..6) }
     end
@@ -156,6 +193,6 @@ include Mastermind
 # a.set_row(4)
 # p a.board[0].data
 # b = ColorCode.new
-# p b.set_code
+# p b.set_code_auto
 # p b.code
 # a.check_keys(b.code, 4)
