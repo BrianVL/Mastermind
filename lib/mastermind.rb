@@ -96,8 +96,23 @@ module Mastermind
     end
 
     def check_keys(code, current_row)
-      check_positions(code, current_row)
-      check_colors(code, current_row)
+      whites = 0
+      reds = 0
+      check_array = code.clone
+      @board[current_row].data.each_with_index do |item, index|
+        if code[index] == item.value
+          whites += 1
+          check_array.delete_at(check_array.find_index(item.value))
+        end
+      end
+      @board[current_row].data.each_with_index do |item, index|
+        if check_array.include?(item.value) && code[index] != item.value
+          reds += 1
+          check_array.delete_at(check_array.find_index(item.value))
+        end
+      end
+      puts "whites: #{whites}"
+      puts "reds: #{reds}"
     end
 
     def clear_board
@@ -117,27 +132,6 @@ module Mastermind
       return true if code == row_to_array(@board[current_row])
     end
 
-    def check_positions(code, current_row)
-      whites = 0
-      @board[current_row].data.each_with_index do |item, index|
-        whites += 1 if code[index] == item.value
-      end
-      puts "whites: #{whites}"
-    end
-
-    def check_colors(code, current_row)
-      reds = 0
-      check_array = code.clone
-      @board[current_row].data.each_with_index do |item, index|
-        puts "index: #{index} / item: #{item.value} / code: #{code[index]}"
-        if check_array.include?(item.value) && code[index] != item.value
-          reds += 1
-          check_array.delete_at(check_array.find_index(item.value))
-          p check_array
-        end
-      end
-      puts "reds: #{reds}"
-    end
   end
 
   class ColorCode
