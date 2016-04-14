@@ -127,9 +127,13 @@ module Mastermind
 
     def check_colors(code, current_row)
       reds = 0
+      check_array = code.clone
       @board[current_row].data.each_with_index do |item, index|
-        if code.include?(item.value) && code[index] != item.value
+        puts "index: #{index} / item: #{item.value} / code: #{code[index]}"
+        if check_array.include?(item.value) && code[index] != item.value
           reds += 1
+          check_array.delete_at(check_array.find_index(item.value))
+          p check_array
         end
       end
       puts "reds: #{reds}"
